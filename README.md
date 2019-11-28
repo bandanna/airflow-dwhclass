@@ -172,6 +172,9 @@ check the data (same row once manually and once from the file)
  from db.pet; 
 ```
 
+**Important Note** : if you want your data to be saved and transferred once working with others on the same project, make sure to uncommenct the `data` folder part from `.gitignore`
+
+
 # Wanna help?
 
 Fork, improve and PR. ;-)
