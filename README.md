@@ -122,6 +122,56 @@ You can also use this to run a bash shell or any other command in the same envir
     docker run --rm -ti puckel/docker-airflow bash
     docker run --rm -ti puckel/docker-airflow ipython
 
+## Work with Mysql
+
+Once the `LocalExecutor` docker-compose is running, you could could to your mysql DB instance using tools like DBeaver or MySQL Workbench. The parameters are as follows:
+
+```
+Host: 127.0.0.1
+Port: 3306
+Database: db
+User: root
+Password: password
+```
+
+Any files added to the folder `/imported_data/` can be seen and accessed by Mysql. 
+
+Example:
+
+Creating table 
+
+```
+CREATE TABLE pet (name VARCHAR(20), owner VARCHAR(20),
+       species VARCHAR(20), sex CHAR(1), birth DATE, death DATE);
+```
+
+Insert values
+
+```
+INSERT INTO `pet`(name,owner,species,sex,birth,death) VALUES ("dog","me","boo","M",'2019-01-01','2019-01-30');
+
+```
+
+load the values from an example file `/imported_data/test.csv`
+
+```
+LOAD DATA INFILE  
+'/imported_data/test.csv'
+INTO TABLE db.pet  
+FIELDS TERMINATED BY ',' 
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n'
+(name,owner,species,sex,birth,death);
+```
+
+
+check the data (same row once manually and once from the file)
+
+```
+ select *
+ from db.pet; 
+```
+
 # Wanna help?
 
 Fork, improve and PR. ;-)
