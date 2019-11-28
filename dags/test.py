@@ -4,6 +4,7 @@ http://airflow.readthedocs.org/en/latest/tutorial.html
 """
 from airflow import DAG
 from airflow.operators.bash_operator import BashOperator
+from airflow.operators.dummy_operator import DummyOperator
 from datetime import datetime, timedelta
 
 
@@ -16,13 +17,10 @@ default_args = {
     "email_on_retry": False,
     "retries": 1,
     "retry_delay": timedelta(minutes=5),
-    # 'queue': 'bash_queue',
-    # 'pool': 'backfill',
-    # 'priority_weight': 10,
-    # 'end_date': datetime(2016, 1, 1),
+
 }
 
-dag = DAG("test_1", default_args=default_args, schedule_interval=timedelta(1))
+dag = DAG("ledia_test", default_args=default_args, schedule_interval=timedelta(1))
 
 # t1, t2 and t3 are examples of tasks created by instantiating operators
 t1 = BashOperator(task_id="print_date", bash_command="date", dag=dag)
@@ -44,5 +42,8 @@ t3 = BashOperator(
     dag=dag,
 )
 
-t2.set_upstream(t1)
-t3.set_upstream(t1)
+t_dummy = DummyOperator(task_id="dummy_today",dag=dag)
+
+t1 >> t2 >> t_dummy
+# t2.set_upstream(t1)
+# t3.set_upstream(t1)
