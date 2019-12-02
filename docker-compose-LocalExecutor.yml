@@ -8,6 +8,16 @@ services:
             - POSTGRES_DB=airflow
         ports:
             - "5432:5432"
+        # volumes:
+        #     - ./postgres/pg_data:/pg_data/
+    mydb:
+        image: postgres:11.6
+        environment:
+            - POSTGRES_USER=mydb
+            - POSTGRES_PASSWORD=mydb
+            - POSTGRES_DB=mydb
+        ports:
+            - "5439:5432"
         volumes:
             - ./postgres/pg_data:/pg_data/
 
