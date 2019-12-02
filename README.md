@@ -46,9 +46,6 @@ For **LocalExecutor** :
 
     docker-compose -f docker-compose-LocalExecutor.yml up -d
 
-For **CeleryExecutor** :
-
-    docker-compose -f docker-compose-CeleryExecutor.yml up -d
 
 NB : If you want to have DAGs example loaded (default=False), you've to set the following environment variable :
 
@@ -121,6 +118,44 @@ You can also use this to run a bash shell or any other command in the same envir
 
     docker run --rm -ti puckel/docker-airflow bash
     docker run --rm -ti puckel/docker-airflow ipython
+
+## Work with PostgresDB (mydb)
+Once the `LocalExecutor` docker-compose is running, you could could to your PostgresDB instance using tools like DBeaver, etc. 
+
+The connections credentials are:
+
+```
+Host: localhost
+Port: 5439
+Database: mydb
+User: mydb
+Password: mydb
+```
+
+Any files added to the folder `/pg_data/` can be seen and accessed by Postgres. 
+
+For example, let's create a table:
+```
+CREATE TABLE pet (name VARCHAR(20), owner VARCHAR(20),
+       species VARCHAR(20), sex CHAR(1), birth DATE, death DATE);
+```
+
+Now, let's insert the data from `pg_data/test.csv`
+```
+copy pet FROM '/var/lib/postgresql/data/test.csv' DELIMITER ',' CSV;
+```
+
+Remmber, if the CSV had head, it'd have been with `HEADER` as of:
+```
+copy pet FROM '/pg_data/test.csv' DELIMITER ',' HEADER CSV;
+```
+
+Check it out
+```
+select * 
+from pet;
+```
+
 
 ## Work with Mysql
 
