@@ -142,6 +142,9 @@ check the data (same row once manually and once from the file)
 
 ## DWH Class Exercise
 
+The slides from the class are available here:
+https://docs.google.com/presentation/d/1bhj3weU4ZrwaCkbcQvmL-WwrrMmN2HQzgXpSuIbA_YU/edit?usp=sharing
+
 Airflow recognizes all DAGs and binaries using a home folder `$AIRFLOW_HOME`. In our case this folder is `dags`. Thus, everything included in that folder is visible and accessible to Airflow.
 
 The files which start with `dag_..` are example pipelines. Please browse them to understand the structure more. The most important file for this exercise is `dag_dwh_class_example.py`. This file includes example Operators of which we'd need in this tutorial (DummyOperator, PythonOperator, PostgresOperator)
