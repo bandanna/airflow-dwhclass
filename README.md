@@ -46,7 +46,7 @@ Go to Admin -> Connections and Edit "postgres_default" set this values (equivale
 - Airflow: [localhost:8080](http://localhost:8080/)
 - Flower: [localhost:5555](http://localhost:5555/)
 
-## Work with PostgresDB (mydb)
+## Work with PostgresDB
 Once the `LocalExecutor` docker-compose is running, you could could to your PostgresDB instance using tools like DBeaver, etc. 
 
 The connections credentials are:
@@ -158,7 +158,7 @@ docker-compose -f docker-compose-LocalExecutor.yml up -d
 Check `docker ps` and in your web browser `localhost:8080` that Airflow is up and running.
 
 As for the tasks:
-1. Create a connection called `mydb` in Airflow. For that check [the section above](#work-with-postgresdb-(mydb))
+1. Create a connection called `mydb` in Airflow. For that check [the section above](#work-with-postgresdb)
 2. Create cron schedule to run once a day at 9AM
     - You may use https://crontab-generator.org for that
 3. The exercise will be performed fully in `dag_dwh_solution.py`, in which the dependencies and some helpful hints are already filled.
