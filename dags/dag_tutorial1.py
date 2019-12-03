@@ -20,7 +20,7 @@ default_args = {
 
 }
 
-dag = DAG("ledia_test", default_args=default_args, schedule_interval=timedelta(1))
+dag = DAG("my_test", default_args=default_args, schedule_interval=timedelta(1))
 
 # t1, t2 and t3 are examples of tasks created by instantiating operators
 t1 = BashOperator(task_id="print_date", bash_command="date", dag=dag)

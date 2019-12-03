@@ -1,0 +1,24 @@
+"office_code","employee_number","last_name","first_name","reports_to","job_title","city","state","country","office_location"
+"1","1002","Murphy","Diane","1002","President","San Francisco","CA","USA",""
+"1","1056","Patterson","Mary","1002","VP Sales","San Francisco","CA","USA",""
+"1","1076","Firrelli","Jeff","1002","VP Marketing","San Francisco","CA","USA",""
+"1","1143","Bow","Anthony","1056","Sales Manager (NA)","San Francisco","CA","USA",""
+"1","1165","Jennings","Leslie","1143","Sales Rep","San Francisco","CA","USA",""
+"1","1166","Thompson","Leslie","1143","Sales Rep","San Francisco","CA","USA",''
+"2","1188","Firrelli","Julie","1143","Sales Rep","Boston","MA","USA",''
+"2","1216","Patterson","Steve","1143","Sales Rep","Boston","MA","USA",''
+"3","1286","Tseng","Foon Yue","1143","Sales Rep","NYC","NY","USA",''
+"3","1323","Vanauf","George","1143","Sales Rep","NYC","NY","USA",''
+"4","1102","Bondur","Gerard","1056","Sale Manager (EMEA)","Paris","","France",''
+"4","1337","Bondur","Loui","1102","Sales Rep","Paris","","France",''
+"4","1370","Hernandez","Gerard","1102","Sales Rep","Paris","","France",''
+"4","1401","Castillo","Pamela","1102","Sales Rep","Paris","","France",''
+"4","1702","Gerard","Martin","1102","Sales Rep","Paris","","France",''
+"5","1621","Nishi","Mami","1056","Sales Rep","Tokyo","Chiyoda-Ku","Japan",''
+"5","1625","Kato","Yoshimi","1621","Sales Rep","Tokyo","Chiyoda-Ku","Japan",''
+"6","1088","Patterson","William","1056","Sales Manager (APAC)","Sydney","NSW","Australia",''
+"6","1611","Fixter","Andy","1088","Sales Rep","Sydney","NSW","Australia",''
+"6","1612","Marsh","Peter","1088","Sales Rep","Sydney","NSW","Australia",''
+"6","1619","King","Tom","1088","Sales Rep","Sydney","NSW","Australia",''
+"7","1501","Bott","Larry","1102","Sales Rep","London","","UK",''
+"7","1504","Jones","Barry","1102","Sales Rep","London","","UK",''
