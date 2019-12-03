@@ -8,31 +8,6 @@
 
 This repository contains **Dockerfile** of [apache-airflow](https://github.com/apache/incubator-airflow) for [Docker](https://www.docker.com/)'s [automated build](https://registry.hub.docker.com/u/puckel/docker-airflow/) published to the public [Docker Hub Registry](https://registry.hub.docker.com/).
 
-## Informations
-
-* Based on Python (3.7-slim-stretch) official Image [python:3.7-slim-stretch](https://hub.docker.com/_/python/) and uses the official [Postgres](https://hub.docker.com/_/postgres/) as backend and [Redis](https://hub.docker.com/_/redis/) as queue
-* Install [Docker](https://www.docker.com/)
-* Install [Docker Compose](https://docs.docker.com/compose/install/)
-* Following the Airflow release from [Python Package Index](https://pypi.python.org/pypi/apache-airflow)
-
-## Installation
-
-Pull the image from the Docker repository.
-
-    docker pull puckel/docker-airflow
-
-## Build
-
-Optionally install [Extra Airflow Packages](https://airflow.incubator.apache.org/installation.html#extra-package) and/or python dependencies at build time :
-
-    docker build --rm --build-arg AIRFLOW_DEPS="datadog,dask" -t puckel/docker-airflow .
-    docker build --rm --build-arg PYTHON_DEPS="flask_oauthlib>=0.9" -t puckel/docker-airflow .
-
-or combined
-
-    docker build --rm --build-arg AIRFLOW_DEPS="datadog,dask" --build-arg PYTHON_DEPS="flask_oauthlib>=0.9" -t puckel/docker-airflow .
-
-Don't forget to update the airflow images in the docker-compose files to puckel/docker-airflow:latest.
 
 ## Usage
 
@@ -60,30 +35,6 @@ Go to Admin -> Connections and Edit "postgres_default" set this values (equivale
 - Login : airflow
 - Password : airflow
 
-For encrypted connection passwords (in Local or Celery Executor), you must have the same fernet_key. By default docker-airflow generates the fernet_key at startup, you have to set an environment variable in the docker-compose (ie: docker-compose-LocalExecutor.yml) file to set the same key accross containers. To generate a fernet_key :
-
-    docker run puckel/docker-airflow python -c "from cryptography.fernet import Fernet; FERNET_KEY = Fernet.generate_key().decode(); print(FERNET_KEY)"
-
-## Configurating Airflow
-
-It's possible to set any configuration value for Airflow from environment variables, which are used over values from the airflow.cfg.
-
-The general rule is the environment variable should be named `AIRFLOW__<section>__<key>`, for example `AIRFLOW__CORE__SQL_ALCHEMY_CONN` sets the `sql_alchemy_conn` config option in the `[core]` section.
-
-Check out the [Airflow documentation](http://airflow.readthedocs.io/en/latest/howto/set-config.html#setting-configuration-options) for more details
-
-You can also define connections via environment variables by prefixing them with `AIRFLOW_CONN_` - for example `AIRFLOW_CONN_POSTGRES_MASTER=postgres://user:password@localhost:5432/master` for a connection called "postgres_master". The value is parsed as a URI. This will work for hooks etc, but won't show up in the "Ad-hoc Query" section unless an (empty) connection is also created in the DB
-
-## Custom Airflow plugins
-
-Airflow allows for custom user-created plugins which are typically found in `${AIRFLOW_HOME}/plugins` folder. Documentation on plugins can be found [here](https://airflow.apache.org/plugins.html)
-
-In order to incorporate plugins into your docker container
-- Create the plugins folders `plugins/` with your custom plugins.
-- Mount the folder as a volume by doing either of the following:
-    - Include the folder as a volume in command-line `-v $(pwd)/plugins/:/usr/local/airflow/plugins`
-    - Use docker-compose-LocalExecutor.yml or docker-compose-CeleryExecutor.yml which contains support for adding the plugins folder as a volume
-
 ## Install custom python package
 
 - Create a file "requirements.txt" with the desired python modules
@@ -95,30 +46,6 @@ In order to incorporate plugins into your docker container
 - Airflow: [localhost:8080](http://localhost:8080/)
 - Flower: [localhost:5555](http://localhost:5555/)
 
-
-## Scale the number of workers
-
-Easy scaling using docker-compose:
-
-    docker-compose -f docker-compose-CeleryExecutor.yml scale worker=5
-
-This can be used to scale to a multi node setup using docker swarm.
-
-## Running other airflow commands
-
-If you want to run other airflow sub-commands, such as `list_dags` or `clear` you can do so like this:
-
-    docker run --rm -ti puckel/docker-airflow airflow list_dags
-
-or with your docker-compose set up like this:
-
-    docker-compose -f docker-compose-CeleryExecutor.yml run --rm webserver airflow list_dags
-
-You can also use this to run a bash shell or any other command in the same environment that airflow would be run in:
-
-    docker run --rm -ti puckel/docker-airflow bash
-    docker run --rm -ti puckel/docker-airflow ipython
-
 ## Work with PostgresDB (mydb)
 Once the `LocalExecutor` docker-compose is running, you could could to your PostgresDB instance using tools like DBeaver, etc. 
 
@@ -126,11 +53,13 @@ The connections credentials are:
 
 ```
 Host: localhost
-Port: 5439
+Port: <CHECK THE NOTE BELOW>
 Database: mydb
 User: mydb
 Password: mydb
 ```
+
+**Note**: If you loading the database from inside Airflow then the port is `5432`, but if you are loading it from your `localhost` (your computer) then it's `5439`.
 
 Any files added to the folder `/pg_data/` can be seen and accessed by Postgres. 
 
@@ -209,7 +138,41 @@ check the data (same row once manually and once from the file)
 
 **Important Note** : if you want your data to be saved and transferred once working with others on the same project, make sure to uncommenct the `data` folder part from `.gitignore`
 
+-------
 
-# Wanna help?
+## DWH Class Exercise
 
-Fork, improve and PR. ;-)
+Airflow recognizes all DAGs and binaries using a home folder `$AIRFLOW_HOME`. In our case this folder is `dags`. Thus, everything included in that folder is visible and accessible to Airflow.
+
+The files which start with `dag_..` are example pipelines. Please browse them to understand the structure more. The most important file for this exercise is `dag_dwh_class_example.py`. This file includes example Operators of which we'd need in this tutorial (DummyOperator, PythonOperator, PostgresOperator)
+
+Before starting, make sure to get your cluster up and running, use the following command:
+
+```
+docker-compose -f docker-compose-LocalExecutor.yml up -d
+```
+
+Check `docker ps` and in your web browser `localhost:8080` that Airflow is up and running.
+
+As for the tasks:
+1. Create a connection called `mydb` in Airflow. For that check [the section above](#work-with-postgresdb-(mydb))
+2. Create cron schedule to run once a day at 9AM
+    - You may use https://crontab-generator.org for that
+3. The exercise will be performed fully in `dag_dwh_solution.py`, in which the dependencies and some helpful hints are already filled.
+4. Create your dag configuration, call it `etl_dwh_class` (not the filename, but the dag name)
+5. Create a dag object with the name and the cron schedule from the second step.
+6. Make sure to set your starting date for November 29, 2019.
+7. Create 2 DummyOperators, one call it `start` and another call it `end`. Connect them in a way that `start`->`end`.
+    - save the file and refresh, make sure it appears in the UI   
+8. Create a PostgresOperator called `create_tables` that runs the tables creation in the `create_tables.sql`. Use the helping lines in the file.
+    - Now convert your pipeline to be start->create_table->end
+    - Double check in the UI (be patient it could take sometime to update)
+9. Create a PythonOperator called `load_employees_and_orders` that runs the `load_data` function which is already imported in `dag_dwh_solution.py`.
+    - Add this Operator between create_tables and end.
+10. Create PostgresOperator called `load_products`. This Operator should run right after the one from the previous step and before `end`. Oh, and the query which loads the Products data is below. Please, rely on the given examples and plug it into PostgresOperator:
+```
+copy products from '/pg_data/products.csv' DELIMITER ',' header CSV;
+```
+11. Make `load_employees_and_orders` and `load_products` parallel instead of sequential. 
+
+
